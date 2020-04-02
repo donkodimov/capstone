@@ -1,0 +1,62 @@
+name: example ec2 group
+  ec2_group:
+    name: example
+    description: an example EC2 group
+    vpc_id: 12345
+    region: eu-west-1
+    rules:
+      - proto: all
+        from_port: 80
+        to_port: 80
+        cidr_ip: 172.31.0.0/16
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 78.43.56.243/32    
+        group_name: sg-k8s-cluster
+      - proto: tcp
+        from_port: 0 
+        to_port: 65535 
+        cidr_ip: 192.168.0.0/16
+    rules_egress:
+      - proto: all
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+        group_name: sg-k8s-cluster
+
+- name: Create EC2 instances for worker nodes
+  ec2:
+    key_name: pipeline
+    instance_type: t2.large
+    image: ami-0fc20dd1da406780b
+    user_data: "{{ USERDATA }}"
+    region: us-east-2
+    group: sg-k8s-cluster
+    wait: yes
+    instance_tags:
+      Name: worker
+      application: "{{ application }}"
+    exact_count: 2
+    count_tag:
+      application: "{{ application }}"
+    assign_public_ip: yes
+  register: ec2_worker
+
+- name: Create EC2 instances for worker master
+  ec2:
+    key_name: pipeline
+    instance_type: t2.large
+    image: ami-0fc20dd1da406780b
+    user_data: "{{ USERDATA }}"
+    region: us-east-2
+    group: sg-k8s-cluster
+    wait: yes
+    instance_tags:
+      Name: master
+      application: "{{ application }}"
+    exact_count: 1
+    count_tag:
+      application: "{{ application }}"
+    assign_public_ip: yes
+  register: ec2_master  
