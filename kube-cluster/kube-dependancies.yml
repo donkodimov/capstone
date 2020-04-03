@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: ec2master:ec2nodes
   remote_user: ubuntu
   become: yes
   tasks:
@@ -35,7 +35,7 @@
        name: kubeadm=1.14.0-00
        state: present
 
-- hosts: master
+- hosts: ec2master
   become: yes
   tasks:
    - name: install kubectl
