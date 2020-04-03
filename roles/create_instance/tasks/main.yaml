@@ -22,12 +22,10 @@
     image: ami-0fc20dd1da406780b
     user_data: "{{ USERDATA }}"
     region: us-east-2
-    group: sg-k8s-cluster
+    group_id: sg-0cfe69542efa6f501
     wait: yes
     instance_tags:
       Name: master
       application: "{{ application }}"
     exact_count: 1
-    count_tag:
-      application: "{{ application }}"
   register: ec2_master  
