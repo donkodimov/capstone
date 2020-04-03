@@ -1,4 +1,4 @@
-- hosts: master
+- hosts: ec2master
   become: yes
   gather_facts: true
   tasks:
