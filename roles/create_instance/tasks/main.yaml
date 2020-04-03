@@ -16,8 +16,8 @@
   register: ec2_worker
   
 - name: Add all instance public IPs to host group
-     add_host: hostname={{ item.public_ip }} groups=ec2workers
-     loop: "{{ ec2_worker.instances }}"
+  add_host: hostname={{ item.public_ip }} groups=ec2workers
+  loop: "{{ ec2_worker.instances }}"
 
 - name: Create EC2 instances for master
   ec2:
@@ -37,5 +37,5 @@
   register: ec2_master  
   
 - name: Add all instance public IPs to host group
-     add_host: hostname={{ item.public_ip }} groups=ec2master
-     loop: "{{ ec2_master.instances }}"
+  add_host: hostname={{ item.public_ip }} groups=ec2master
+  loop: "{{ ec2_master.instances }}"
