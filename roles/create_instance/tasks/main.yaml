@@ -15,7 +15,7 @@
       application: "{{ application }}"
   register: ec2_worker
 
-- name: Create EC2 instances for worker master
+- name: Create EC2 instances for master
   ec2:
     key_name: pipeline
     instance_type: t2.large
