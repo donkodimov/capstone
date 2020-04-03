@@ -21,5 +21,12 @@ pipeline {
                   ansiblePlaybook playbook: 'main.yaml', inventory: 'inventory'
               }
          }
+         stage('Create Kubernetes Cluster') {
+              steps {
+                  ansiblePlaybook playbook: 'kube-cluster/kube-dependancies.yml', inventory: 'hosts'
+                  ansiblePlaybook playbook: 'kube-cluster/master.yml', inventory: 'hosts'
+                  ansiblePlaybook playbook: 'kube-cluster/nodes.yml', inventory: 'hosts' 
+              }
+         } 
      }
 }
