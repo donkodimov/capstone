@@ -1,4 +1,4 @@
-name: example ec2 group
+- name: example ec2 group
   ec2_group:
     name: example
     description: an example EC2 group
