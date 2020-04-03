@@ -13,7 +13,6 @@
     exact_count: 2
     count_tag:
       application: "{{ application }}"
-    assign_public_ip: yes
   register: ec2_worker
 
 - name: Create EC2 instances for worker master
@@ -31,5 +30,4 @@
     exact_count: 1
     count_tag:
       application: "{{ application }}"
-    assign_public_ip: yes
   register: ec2_master  
