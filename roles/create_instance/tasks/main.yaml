@@ -1,83 +1,88 @@
-- name: Create EC2 instances for worker nodes
-  ec2:
-    key_name: pipeline
-    instance_type: t2.large
-    image: ami-0fc20dd1da406780b
-    user_data: "{{ USERDATA }}"
-    region: us-east-2
-    group_id: sg-0cfe69542efa6f501
-    wait: yes
-    instance_tags:
-      Name: worker
-      application: "{{ application }}"
-    exact_count: 2
-    count_tag:
-      application: "{{ application }}"
-  register: ec2_worker
-  
-- name: Add all instance public IPs to host group
-  add_host: hostname={{ item.public_ip }} groups=ec2workers
-  loop: "{{ ec2_worker.instances }}"
+- hosts: localhost
+  gather_facts: False
 
-- name: Create EC2 instances for master
-  ec2:
-    key_name: pipeline
-    instance_type: t2.large
-    image: ami-0fc20dd1da406780b
-    user_data: "{{ USERDATA }}"
-    region: us-east-2
-    group_id: sg-0cfe69542efa6f501
-    wait: yes
-    instance_tags:
-      Name: master
-      application: "{{ application }}"
-    exact_count: 1
-    count_tag:
-      Name: master
-  register: ec2_master  
-  
-- name: Add all instance public IPs to host group
-  add_host: hostname={{ item.public_ip }} groups=ec2master
-  loop: "{{ ec2_master.instances }}"
-
-- hosts: ec2master:ec2nodes
-  name: install dependancies
-  remote_user: ubuntu
-  become: yes
-  gather_facts: true
   tasks:
-   - name: install Docker
-     apt:
-       name: docker.io
-       state: present
-       update_cache: true
+  
+  - name: Create EC2 instances for worker nodes
+    ec2:
+      key_name: pipeline
+      instance_type: t2.large
+      image: ami-0fc20dd1da406780b
+      user_data: "{{ USERDATA }}"
+      region: us-east-2
+      group_id: sg-0cfe69542efa6f501
+      wait: yes
+      instance_tags:
+        Name: worker
+        application: "{{ application }}"
+      exact_count: 2
+      count_tag:
+        application: "{{ application }}"
+    register: ec2_worker
+  
+  - name: Add all instance public IPs to host group
+    add_host: hostname={{ item.public_ip }} groups=ec2workers
+    loop: "{{ ec2_worker.instances }}"
 
-   - name: install APT Transport HTTPS
-     apt:
-       name: apt-transport-https
-       state: present
+  - name: Create EC2 instances for master
+    ec2:
+      key_name: pipeline
+      instance_type: t2.large
+      image: ami-0fc20dd1da406780b
+      user_data: "{{ USERDATA }}"
+      region: us-east-2
+      group_id: sg-0cfe69542efa6f501
+      wait: yes
+      instance_tags:
+        Name: master
+        application: "{{ application }}"
+      exact_count: 1
+      count_tag:
+      Name: master
+    register: ec2_master  
+  
+  - name: Add all instance public IPs to host group
+    add_host: hostname={{ item.public_ip }} groups=ec2master
+    loop: "{{ ec2_master.instances }}"
 
-   - name: add Kubernetes apt-key
-     apt_key:
-       url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-       state: present
+  - hosts: ec2master:ec2nodes
+    name: install dependancies
+    remote_user: ubuntu
+    become: yes
+    gather_facts: true
+    tasks:
+     - name: install Docker
+       apt:
+         name: docker.io
+         state: present
+         update_cache: true
 
-   - name: add Kubernetes' APT repository
-     apt_repository:
-      repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
-      state: present
-      filename: 'kubernetes'
+     - name: install APT Transport HTTPS
+       apt:
+         name: apt-transport-https
+         state: present
 
-   - name: install kubelet
-     apt:
-       name: kubelet=1.14.0-00
-       state: present
-       update_cache: true
+     - name: add Kubernetes apt-key
+       apt_key:
+         url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+         state: present
 
-   - name: install kubeadm
-     apt:
-       name: kubeadm=1.14.0-00
-       state: present
+     - name: add Kubernetes' APT repository
+       apt_repository:
+        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        filename: 'kubernetes'
+
+     - name: install kubelet
+       apt:
+         name: kubelet=1.14.0-00
+         state: present
+         update_cache: true
+
+     - name: install kubeadm
+       apt:
+         name: kubeadm=1.14.0-00
+         state: present
 
 - hosts: ec2master
   become: yes
