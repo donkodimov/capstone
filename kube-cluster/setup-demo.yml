@@ -29,6 +29,7 @@
 - hosts: ec2workers
   name: configuration play
   user: ubuntu
+  become: yes
   gather_facts: true
   tasks:
     - name: install Docker
