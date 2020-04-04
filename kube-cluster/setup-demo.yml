@@ -2,6 +2,34 @@
   gather_facts: False
   tasks:
 
+    - name: Create EC2 instances for master
+      ec2:
+        key_name: pipeline
+        instance_type: t2.large
+        image: ami-0fc20dd1da406780b
+        user_data: "{{ lookup('file', 'user_data.sh') }}"
+        region: us-east-2
+        group_id: sg-0cfe69542efa6f501
+        wait: yes
+        instance_tags:
+          Name: master
+          application: k82_cluster
+        exact_count: 1
+        count_tag:
+          Name: master
+      register: ec2_master
+    - name: Wait for SSH to come up
+      local_action: wait_for host={{ item.public_ip }}
+        port=22 delay=60 timeout=320 state=started
+      with_items: "{{ ec2_master.instances }}"
+    - name: Add all instance public IPs to host
+      add_host: hostname={{ item.public_ip }} groups=ec2master
+      loop: "{{ ec2_master.instances }}"
+
+- hosts: localhost
+  gather_facts: False
+  tasks:
+
     - name: Create EC2 instances for worker nodes
       ec2:
         key_name: pipeline
@@ -14,9 +42,9 @@
         instance_tags:
           Name: worker
           application: k82_cluster
-        exact_count: 1
+        exact_count: 2
         count_tag:
-          application: k82_cluster
+          Name: worker
       register: ec2_worker
     - name: Wait for SSH to come up
       local_action: wait_for host={{ item.public_ip }}
@@ -26,8 +54,8 @@
       add_host: hostname={{ item.public_ip }} groups=ec2workers
       loop: "{{ ec2_worker.instances }}"
 
-- hosts: ec2workers
-  name: configuration play
+- hosts: ec2workers:ec2master
+  name: Install dependancies
   user: ubuntu
   become: yes
   gather_facts: true
@@ -63,3 +91,71 @@
       apt:
         name: kubeadm=1.14.0-00
         state: present
+
+- hosts: ec2master
+  name: Install dependancies
+  user: ubuntu
+  become: yes
+  gather_facts: true
+  tasks:
+    - name: install kubectl
+      apt:
+        name: kubectl=1.14.0-00
+        state: present
+        force: yes
+
+- hosts: ec2master
+  become: yes
+  tasks:
+    - name: initialize the cluster
+      shell: kubeadm init --pod-network-cidr=192.168.0.0/16 >> cluster_initialized.txt
+      args:
+        chdir: $HOME
+        creates: cluster_initialized.txt
+
+    - name: create .kube directory
+      become: yes
+      become_user: ubuntu
+      file:
+        path: $HOME/.kube
+        state: directory
+        mode: 0755
+
+    - name: copy admin.conf to user's kube config
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/ubuntu/.kube/config
+        remote_src: yes
+        owner: ubuntu
+
+    - name: install Pod network
+      become: yes
+      become_user: ubuntu
+      shell: kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml >> pod_network_setup.txt
+      args:
+        chdir: $HOME
+        creates: pod_network_setup.txt
+
+- hosts: ec2master
+  become: yes
+  gather_facts: true
+  tasks:
+    - name: get join command
+      shell: kubeadm token create --print-join-command
+      register: join_command_raw
+
+    - name: set join command
+      set_fact:
+        join_command: "{{ join_command_raw.stdout_lines[0] }}"
+
+
+- hosts: workers
+  become: yes
+  tasks:
+    - name: TCP port 6443 on master is reachable from worker
+      wait_for: "host={{ hostvars['master']['ansible_default_ipv4']['address'] }} port=6443 timeout=1"
+    - name: join cluster
+      shell: "{{ hostvars['master'].join_command }} >> node_joined.txt"
+      args:
+        chdir: $HOME
+        creates: node_joined.txt
