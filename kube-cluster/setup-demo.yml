@@ -1,0 +1,32 @@
+- hosts: localhost
+  gather_facts: False
+
+  tasks:
+
+    - name: Create EC2 instances for worker nodes
+      ec2:
+        key_name: pipeline
+        instance_type: t2.large
+        image: ami-0fc20dd1da406780b
+        user_data: "{{ USERDATA }}"
+        region: us-east-2
+        group_id: sg-0cfe69542efa6f501
+        wait: yes
+        instance_tags:
+          Name: worker
+          application: "{{ application }}"
+        exact_count: 2
+        count_tag:
+          application: "{{ application }}"
+      register: ec2_worker      
+- name: Add all instance public IPs to host
+  add_host: hostname={{ item.public_ip }} groups=ec2workers
+  loop: "{{ ec2_worker.instances }}"
+
+- hosts: ec2workers
+  name: configuration play
+  user: ubuntu
+  gather_facts: true
+  tasks:
+    - name: Check NTP service
+      service: name=ntpd state=started

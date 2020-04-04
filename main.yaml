@@ -7,5 +7,4 @@
     application: k8s_cluster
   tasks:
     - name: create instances
-      include_role: 
-        name: create_instance
+      include_tasks: roles/create_instance/tasks/main.yaml

@@ -1,5 +1,5 @@
 localhost ansible_connection=local
 
-[ec2nodes]
+[ec2workers]
 
 [ec2master]
