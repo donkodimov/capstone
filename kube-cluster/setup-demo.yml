@@ -23,8 +23,10 @@
         port=22 delay=60 timeout=320 state=started
       with_items: "{{ ec2_master.instances }}"
     - name: Add all instance public IPs to host
-      add_host: hostname={{ item.public_ip }} groups=ec2master
-      loop: "{{ ec2_master.instances }}"
+      add_host: 
+        hostname: master
+        ansible_host: "{{ item.public_ip }}"
+        groups: ec2master
 
 - hosts: localhost
   gather_facts: False
