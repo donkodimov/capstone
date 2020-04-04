@@ -14,10 +14,10 @@
         wait: yes
         instance_tags:
           Name: worker
-          application: "{{ application }}"
+          application: k82_cluster
         exact_count: 2
         count_tag:
-          application: "{{ application }}"
+          application: k82_cluster
       register: ec2_worker      
     - name: Add all instance public IPs to host
       add_host: hostname={{ item.public_ip }} groups=ec2workers
