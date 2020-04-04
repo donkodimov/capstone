@@ -27,6 +27,7 @@
         hostname: master
         ansible_host: "{{ item.public_ip }}"
         groups: ec2master
+      loop: "{{ ec2_master.instances }}"
 
 - hosts: localhost
   gather_facts: False
