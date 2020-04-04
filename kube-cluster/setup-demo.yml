@@ -19,9 +19,9 @@
         count_tag:
           application: "{{ application }}"
       register: ec2_worker      
-- name: Add all instance public IPs to host
-  add_host: hostname={{ item.public_ip }} groups=ec2workers
-  loop: "{{ ec2_worker.instances }}"
+    - name: Add all instance public IPs to host
+      add_host: hostname={{ item.public_ip }} groups=ec2workers
+      loop: "{{ ec2_worker.instances }}"
 
 - hosts: ec2workers
   name: configuration play
