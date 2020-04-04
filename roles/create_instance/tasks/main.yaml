@@ -1,7 +1,6 @@
 - name: Create EC2 instances
   hosts: localhost
-  gather_facts: False
-
+  
   tasks:
     - name: Create EC2 instances for worker nodes
       ec2:
@@ -28,7 +27,7 @@
   name: install dependancies
   remote_user: ubuntu
   become: yes
-  gather_facts: True
+  gather_facts: true 
   tasks:
     - name: install Docker
       apt:
