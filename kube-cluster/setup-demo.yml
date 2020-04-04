@@ -155,6 +155,9 @@
 - hosts: ec2workers
   become: yes
   tasks:
+    - name: TCP port 6443 on master is reachable from worker
+      wait_for: "host={{ hostvars['master']['ansible_default_ipv4']['address'] }} port=6443 timeout=1"
+      
     - name: join cluster
       shell: "{{ hostvars['master'].join_command }} >> node_joined.txt"
       args:
