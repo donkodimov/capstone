@@ -14,7 +14,7 @@
         instance_tags:
           Name: worker
           application: k82_cluster
-        exact_count: 2
+        exact_count: 1
         count_tag:
           application: k82_cluster
       register: ec2_worker
