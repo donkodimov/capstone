@@ -1,51 +1,44 @@
-- name: Provision instances in AWS
-  hosts: localhost
-  connection: local
-  gather_facts: False
-
-  tasks:
+  - name: Create EC2 instances for worker nodes
+    ec2:
+      key_name: pipeline
+      instance_type: t2.large
+      image: ami-0fc20dd1da406780b
+      user_data: "{{ USERDATA }}"
+      region: us-east-2
+      group_id: sg-0cfe69542efa6f501
+      wait: yes
+      instance_tags:
+        Name: worker
+        application: "{{ application }}"
+      exact_count: 2
+      count_tag:
+        application: "{{ application }}"
+    register: ec2_worker
   
-    - name: Create EC2 instances for worker nodes
-      ec2:
-        key_name: pipeline
-        instance_type: t2.large
-        image: ami-0fc20dd1da406780b
-        user_data: "{{ USERDATA }}"
-        region: us-east-2
-        group_id: sg-0cfe69542efa6f501
-        wait: yes
-        instance_tags:
-          Name: worker
-          application: "{{ application }}"
-        exact_count: 2
-        count_tag:
-          application: "{{ application }}"
-      register: ec2_worker
-  
-    - name: Add all instance public IPs to host group
-      add_host: hostname={{ item.public_ip }} groups=ec2workers
-      loop: "{{ ec2_worker.instances }}"
+  - name: Add all instance public IPs to host group
+    add_host: hostname={{ item.public_ip }} groups=ec2workers
+    loop: "{{ ec2_worker.instances }}"
 
-    - name: Create EC2 instances for master
-      ec2:
-        key_name: pipeline
-        instance_type: t2.large
-        image: ami-0fc20dd1da406780b
-        user_data: "{{ USERDATA }}"
-        region: us-east-2
-        group_id: sg-0cfe69542efa6f501
-        wait: yes
-        instance_tags:
-          Name: master
-          application: "{{ application }}"
-        exact_count: 1
-        count_tag:
+  - name: Create EC2 instances for master
+    ec2:
+      key_name: pipeline
+      instance_type: t2.large
+      image: ami-0fc20dd1da406780b
+      user_data: "{{ USERDATA }}"
+      region: us-east-2
+      group_id: sg-0cfe69542efa6f501
+      wait: yes
+      instance_tags:
         Name: master
-      register: ec2_master  
+        application: "{{ application }}"
+      exact_count: 1
+      count_tag:
+      Name: master
+    register: ec2_master  
   
-    - name: Add all instance public IPs to host group
-      add_host: hostname={{ item.public_ip }} groups=ec2master
-      loop: "{{ ec2_master.instances }}"
+  - name: Add all instance public IPs to host group
+    add_host: hostname={{ item.public_ip }} groups=ec2master
+    loop: "{{ ec2_master.instances }}"
 
 
 - hosts: ec2master:ec2nodes
