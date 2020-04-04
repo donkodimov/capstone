@@ -3,3 +3,6 @@ localhost ansible_connection=local
 [ec2workers]
 
 [ec2master]
+
+[all:vars]
+ansible_ssh_private_key_file=~/.ssh/pipeline.pem
