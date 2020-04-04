@@ -21,12 +21,6 @@ pipeline {
                   ansiblePlaybook playbook: 'main.yaml', inventory: 'inventory'
               }
          }
-         stage('Create Kubernetes Cluster') {
-              steps {
-                  ansiblePlaybook playbook: 'kube-cluster/kube-dependancies.yml'
-                  ansiblePlaybook playbook: 'kube-cluster/master.yml'
-                  ansiblePlaybook playbook: 'kube-cluster/nodes.yml'
-              }
-         } 
+         
      }
 }
