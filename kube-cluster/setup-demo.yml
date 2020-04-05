@@ -163,3 +163,14 @@
       args:
         chdir: $HOME
         creates: node_joined.txt
+
+- name: Transfer and execute a script.
+  hosts: ec2master
+  remote_user: ubuntu
+  sudo: yes
+  tasks:
+     - name: Transfer the script
+       copy: src=kubectl_autocomplete.sh dest=/home/ubuntu mode=0777
+
+     - name: Execute the script
+       command: sh /home/ubuntu/kubectl_autocomplete.sh
