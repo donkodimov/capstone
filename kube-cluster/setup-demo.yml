@@ -157,20 +157,8 @@
   tasks:
     - name: TCP port 6443 on master is reachable from worker
       wait_for: "host={{ hostvars['master']['ansible_default_ipv4']['address'] }} port=6443 timeout=1"
-      
     - name: join cluster
       shell: "{{ hostvars['master'].join_command }} >> node_joined.txt"
       args:
         chdir: $HOME
         creates: node_joined.txt
-
-- name: Transfer and execute a script.
-  hosts: ec2master
-  remote_user: ubuntu
-  become: yes
-  tasks:
-     - name: Transfer the script
-       copy: src=kubectl_autocomplete.sh dest=/home/ubuntu mode=0777
-
-     - name: Execute the script
-       command: sh /home/ubuntu/kubectl_autocomplete.sh
