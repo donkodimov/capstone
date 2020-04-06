@@ -6,7 +6,7 @@ Final project - Cloud DevOps Udacity
 
 Copy the repo:
 ```
-
+git clone https://github.com/donkodimov/capstone.git
 ```
 
 ### Dependencies
