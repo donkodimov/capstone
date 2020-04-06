@@ -4,9 +4,10 @@ Final project - Cloud DevOps Udacity
 
 ## Getting Started
 
-Copy the repo:
+Copy the repo and navigate to directory:
 ```
 git clone https://github.com/donkodimov/capstone.git
+cd capstone
 ```
 
 ### Dependencies
