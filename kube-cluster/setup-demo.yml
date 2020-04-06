@@ -167,7 +167,7 @@
 - name: Transfer and execute a script.
   hosts: ec2master
   remote_user: ubuntu
-  sudo: yes
+  become: yes
   tasks:
      - name: Transfer the script
        copy: src=kubectl_autocomplete.sh dest=/home/ubuntu mode=0777
