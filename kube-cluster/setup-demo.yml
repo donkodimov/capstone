@@ -1,5 +1,9 @@
 - hosts: localhost
   gather_facts: False
+  vars:
+    - application: k8s_cluster
+    - ELBNAME: "{{ application }}-load-balancer"
+
   tasks:
     - name: Create the ELB only listening over port 80
       ec2_elb_lb:
@@ -26,7 +30,7 @@
         wait: yes
         instance_tags:
           Name: master
-          application: k82_cluster
+          application: "{{ application }}"
         exact_count: 1
         count_tag:
           Name: master
@@ -57,7 +61,7 @@
         wait: yes
         instance_tags:
           Name: worker
-          application: k82_cluster
+          application: "{{ application }}"
         exact_count: 2
         count_tag:
           Name: worker
