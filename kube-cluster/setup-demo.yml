@@ -186,14 +186,18 @@
 - hosts: ec2master
   name: Deploy app
   user: ubuntu
-  become: yes
-  gather_facts: true
+  gather_facts: false
   tasks:
     - name: clone git repo
       git:
         repo: 'https://github.com/donkodimov/ml-microservice-kubernetes.git'
         dest: /home/ubuntu/repo
         update: yes
+
+    - name: Wait until the deployment file is present before continuing
+      wait_for:
+        path: /home/ubuntu/repo/prediction-deployment.yaml
+        state: present
 
     - name: Run deployment
       shell: kubectl apply -f /home/ubuntu/repo/prediction-deployment.yaml > deploy_out.txt
