@@ -2,7 +2,7 @@
   gather_facts: False
   vars:
     - application: k8s_cluster
-    - ELBNAME: "{{ application }}loadbalancer"
+    - ELBNAME: "{{ application }}_load_balancer"
 
   tasks:
     - name: Create the ELB only listening over port 80
