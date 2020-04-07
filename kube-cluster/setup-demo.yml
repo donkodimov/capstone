@@ -7,7 +7,7 @@
   tasks:
     - name: Create the ELB only listening over port 80
       ec2_elb_lb:
-        name: "{{ ELBNAME }}"
+        name: {{ ELBNAME }}
         state: present
         region: us-east-2
         zones:
