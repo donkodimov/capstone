@@ -82,7 +82,7 @@
         state: present
         ec2_elbs: "{{ ELBNAME }}"
         region: "{{ item.region }}"
-        instance_id: "{{ ec2_worker.item.id }}"
+        instance_id: "{{ item.id }}"
       with_items: "{{ ec2_worker.tagged_instances }}"
 
 - hosts: ec2workers:ec2master
