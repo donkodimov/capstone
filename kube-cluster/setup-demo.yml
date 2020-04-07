@@ -16,7 +16,7 @@
         listeners:
           - protocol: http
             load_balancer_port: 80
-            instance_port: 30151
+            instance_port: 30007
       register: elb
 
     - name: Create EC2 instances for master
@@ -76,14 +76,6 @@
     - name: Add all instance public IPs to host
       add_host: hostname={{ item.public_ip }} groups=ec2workers
       loop: "{{ ec2_worker.instances }}"
-
-    - name: Add each EC2 instance to the ELB
-      ec2_elb:
-        state: present
-        ec2_elbs: "{{ ELBNAME }}"
-        region: "{{ item.region }}"
-        instance_id: "{{ item.id }}"
-      with_items: "{{ ec2_worker.tagged_instances }}"
 
 - hosts: ec2workers:ec2master
   name: Install dependancies
@@ -190,3 +182,41 @@
       args:
         chdir: $HOME
         creates: node_joined.txt
+
+- hosts: ec2master
+  name: Deploy app
+  user: ubuntu
+  become: yes
+  gather_facts: true
+  tasks:
+    - name: clone git repo
+      git:
+        repo: 'https://github.com/donkodimov/ml-microservice-kubernetes.git'
+        dest: /home/ubuntu
+        update: yes
+
+    - name: Run deployment
+      shell: kubectl apply -f /home/ubuntu/ml-microservice-kubernetes/prediction-deployment.yaml > deploy_out.txt
+      args:
+        chdir: $HOME
+        creates: deploy_out.txt
+
+    - name: Run service
+      shell: kubectl apply -f /home/ubuntu/ml-microservice-kubernetes/prediction-service.yaml > svc_out.txt
+      args:
+        chdir: $HOME
+        creates: svc_out.txt
+
+- hosts: localhost
+  gather_facts: False
+  vars:
+    - application: k8s-cluster
+    - ELBNAME: "{{ application }}-load-balancer"
+  tasks:
+    - name: Add each EC2 instance to the ELB
+      ec2_elb:
+        state: present
+        ec2_elbs: "{{ ELBNAME }}"
+        region: "{{ item.region }}"
+        instance_id: "{{ item.id }}"
+      with_items: "{{ ec2_worker.tagged_instances }}"
