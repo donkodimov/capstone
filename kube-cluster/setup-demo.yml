@@ -192,17 +192,17 @@
     - name: clone git repo
       git:
         repo: 'https://github.com/donkodimov/ml-microservice-kubernetes.git'
-        dest: /home/ubuntu
+        dest: /home/ubuntu/repo
         update: yes
 
     - name: Run deployment
-      shell: kubectl apply -f /home/ubuntu/ml-microservice-kubernetes/prediction-deployment.yaml > deploy_out.txt
+      shell: kubectl apply -f /home/ubuntu/repo/prediction-deployment.yaml > deploy_out.txt
       args:
         chdir: $HOME
         creates: deploy_out.txt
 
     - name: Run service
-      shell: kubectl apply -f /home/ubuntu/ml-microservice-kubernetes/prediction-service.yaml > svc_out.txt
+      shell: kubectl apply -f /home/ubuntu/repo/prediction-service.yaml > svc_out.txt
       args:
         chdir: $HOME
         creates: svc_out.txt
