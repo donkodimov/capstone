@@ -217,6 +217,7 @@
     - name: TCP port 30007 on worker nodes is reachable
       wait_for:
         "host={{ ansible_facts['nodename'] }} port=30007 timeout=1"
+      delay: 15
 
 - hosts: localhost
   gather_facts: False
