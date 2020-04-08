@@ -214,9 +214,10 @@
 - name: Wait for port 8000 to become open on the host
   hosts: ec2workers
   gather_facts: True
-  wait_for:
-    port: 30007
-    delay: 5
+  tasks:
+    wait_for:
+      port: 30007
+      delay: 5
 
 - hosts: localhost
   gather_facts: False
