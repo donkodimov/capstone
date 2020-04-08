@@ -211,6 +211,13 @@
         chdir: $HOME
         creates: svc_out.txt
 
+- hosts: ec2workers
+  tasks:
+    - name: TCP port 6443 on master is reachable from worker
+      wait_for:
+        port: 6443
+        timeout: 1
+
 - hosts: localhost
   gather_facts: False
   vars:
