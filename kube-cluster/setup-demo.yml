@@ -213,9 +213,9 @@
 
 - hosts: ec2workers
   tasks:
-    - name: TCP port 6443 on master is reachable from worker
+    - name: TCP port 30007 on worker nodes is reachable
       wait_for:
-        port: 6443
+        port: 30007
         timeout: 1
 
 - hosts: localhost
