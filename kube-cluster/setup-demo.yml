@@ -212,9 +212,11 @@
         creates: svc_out.txt
 
 - hosts: ec2workers
+  gather_facts: True
   tasks:
     - name: TCP port 30007 on worker nodes is reachable
       wait_for:
+        host: "{{ ansible_net_hostname }}"
         port: 30007
         timeout: 1
 
