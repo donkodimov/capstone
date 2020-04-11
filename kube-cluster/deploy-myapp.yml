@@ -1,29 +1,29 @@
 ---
 - name: Create a Deployment for myapp.
-    k8s:
-      state: present
-      definition:
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: myapp
-          namespace: default
-        spec:
-          replicas: "{{ replicas }}"
-          selector:
-            matchLabels:
+  k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: myapp
+        namespace: default
+      spec:
+        replicas: "{{ replicas }}"
+        selector:
+          matchLabels:
+            app: myapp
+        template:
+          metadata:
+            labels:
               app: myapp
-          template:
-            metadata:
-              labels:
-                app: myapp
-            spec:
-              containers:
-              - name: myapp
-                image: "{{ image_name }}"
-                imagePullPolicy: Always
-                ports:
-                - containerPort: 8000
+          spec:
+            containers:
+            - name: myapp
+              image: "{{ image_name }}"
+              imagePullPolicy: Always
+              ports:
+              - containerPort: 8000
 - name: Create a Service for Hello Go.
   k8s:
     state: present
