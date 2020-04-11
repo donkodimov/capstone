@@ -184,7 +184,6 @@
         creates: node_joined.txt
 
 - hosts: ec2master
-  name: Deploy app
   user: ubuntu
   become: yes
   gather_facts: false
