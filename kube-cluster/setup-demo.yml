@@ -186,6 +186,7 @@
 - hosts: ec2master
   name: Deploy app
   user: ubuntu
+  become: yes
   gather_facts: false
   vars:
     replicas: 4
