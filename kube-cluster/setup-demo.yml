@@ -188,28 +188,7 @@
   user: ubuntu
   gather_facts: false
   tasks:
-    - name: clone git repo
-      git:
-        repo: 'https://github.com/donkodimov/ml-microservice-kubernetes.git'
-        dest: /home/ubuntu/repo
-        update: yes
-
-    - name: Wait until the deployment file is present before continuing
-      wait_for:
-        path: /home/ubuntu/repo/prediction-deployment.yaml
-        state: present
-
-    - name: Run deployment
-      shell: kubectl apply -f /home/ubuntu/repo/prediction-deployment.yaml > deploy_out.txt
-      args:
-        chdir: $HOME
-        creates: deploy_out.txt
-
-    - name: Run service
-      shell: kubectl apply -f /home/ubuntu/repo/prediction-service.yaml > svc_out.txt
-      args:
-        chdir: $HOME
-        creates: svc_out.txt
+    - import_tasks: deploy-myapp.yml 
 
 - hosts: ec2workers
   gather_facts: True
