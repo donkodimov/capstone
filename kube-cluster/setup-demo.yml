@@ -188,7 +188,10 @@
   user: ubuntu
   gather_facts: false
   tasks:
-    - import_tasks: deploy-myapp.yml 
+    - import_tasks: deploy-myapp.yml
+      vars:
+        replicas: 4
+        image_name: donko/myapp
 
 - hosts: ec2workers
   gather_facts: True
