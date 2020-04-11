@@ -187,11 +187,52 @@
   name: Deploy app
   user: ubuntu
   gather_facts: false
+  vars:
+    replicas: 4
+    image_name: donko/myapp
   tasks:
-    - import_tasks: deploy-myapp.yml
-      vars:
-        replicas: 4
-        image_name: donko/myapp
+    - name: Create a Deployment for myapp.
+      k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: myapp
+            namespace: default
+          spec:
+            replicas: "{{ replicas }}"
+            selector:
+              matchLabels:
+                app: myapp
+            template:
+              metadata:
+                labels:
+                  app: myapp
+              spec:
+                containers:
+                - name: myapp
+                  image: "{{ image_name }}"
+                  imagePullPolicy: Always
+                  ports:
+                  - containerPort: 8000
+    - name: Create a Service for myapp.
+      k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: myapp
+            namespace: default
+          spec:
+            type: NodePort
+            ports:
+            - port: 8000
+              targetPort: 8000
+              NodePort: 30007
+            selector:
+              app: myapp
 
 - hosts: ec2workers
   gather_facts: True
