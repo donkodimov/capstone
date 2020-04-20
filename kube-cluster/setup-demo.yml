@@ -194,7 +194,6 @@
 
 - hosts: ec2master
   user: ubuntu
-  become: yes
   gather_facts: false
   vars:
     replicas: 4
