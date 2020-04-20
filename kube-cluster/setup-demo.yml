@@ -190,7 +190,6 @@
   vars:
     replicas: 4
     image_name: donko/myapp
-    ansible_python_interpreter: '{{ ansible_playbook_python }}'
   tasks:
     - name: Create a Deployment for myapp.
       k8s:
