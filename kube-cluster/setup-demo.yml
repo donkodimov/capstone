@@ -197,7 +197,7 @@
   gather_facts: false
   vars:
     replicas: 4
-    image_name: donko/myapp
+    image_name: donko/myapp:blue
   tasks:
     - name: Create a Deployment for myapp.
       k8s:
