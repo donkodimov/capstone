@@ -238,7 +238,7 @@
             ports:
             - port: 8000
               targetPort: 8000
-              NodePort: 30007
+              nodePort: 30007
             selector:
               app: myapp
 
