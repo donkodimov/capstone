@@ -114,6 +114,15 @@
       apt:
         name: kubeadm=1.14.0-00
         state: present
+    
+    - name: install python-pip
+      apt:
+        name: python-pip
+        state: present
+        
+    - name: install pip module openshift
+      pip:
+        name: openshift
 
 - hosts: ec2master
   name: Install dependancies
