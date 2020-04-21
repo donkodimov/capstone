@@ -14,3 +14,7 @@
         region: us-east-2
         filters:
           "tag:Name": master
+      register: master_info 
+
+      - name: Print info
+        debug: var="master_info.private_ip_address"
