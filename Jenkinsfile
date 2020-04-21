@@ -17,6 +17,7 @@ pipeline {
             }
          }
          stage('Lint') {
+<<<<<<< HEAD
             steps {
               sh 'make lint'
             }
@@ -38,6 +39,29 @@ pipeline {
               sh 'make upload'
             }
           }
+=======
+      steps {
+        sh 'make lint'
+      }
+    }
+    stage('Build Docker') {
+      steps {
+        sh 'make build'
+      }
+    }
+    stage('Login to dockerhub') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'passwordVariable')]) {
+          sh 'docker login -u donko -p ${env.dockerHubPassword}'
+        }
+      }
+    }
+    stage('Upload Image') {
+      steps {
+        sh 'make upload'
+      }
+    }
+>>>>>>> c4676a136b20ab3e2ec9ba67ab1438df65c1436e
          stage('Deploy to Kubernetes') {
               steps {
                   ansiblePlaybook playbook: 'main.yml', inventory: 'inventory', credentialsId: 'pipeline'
