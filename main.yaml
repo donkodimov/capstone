@@ -4,7 +4,8 @@
   gather_facts: false
   vars:
     ansible_python_interpreter: /usr/bin/python2
-    application: k8s_cluster
   tasks:
-    - name: create instances
-      include_tasks: roles/create_instance/tasks/main.yaml
+    - name: Get facts for master
+      ec2_instance_info:
+        filters:
+          "tag:Name": master
