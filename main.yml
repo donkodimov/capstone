@@ -17,4 +17,4 @@
       register: master_info 
 
     - name: Print info
-      debug: msg="{{ master_info['instances']['ami_launch_index'] }}"
+      debug: msg="{{ master_info['instances'][0] }}"
