@@ -22,6 +22,5 @@
     - name: Add instance private IPs to group
       add_host:
         hostname: master
-        ansible_host: "{{ item.private_ip_address }}"
+        ansible_host: "{{ ec2_master['instances'][0]['private_ip_address'] }}"
         groups: ec2master
-      loop: "{{ ec2_master['instances'][0] }}"
