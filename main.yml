@@ -17,5 +17,4 @@
       register: master_info 
 
     - name: Print info
-      debug: var={{ item.private_ip_address }}
-      with_items: master_info.instances
+      debug: msg={{ master_info.instances.private_ip_address }
