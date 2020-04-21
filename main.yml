@@ -16,5 +16,5 @@
           "tag:Name": master
       register: master_info 
 
-      - name: Print info
-        debug: var="master_info.private_ip_address"
+    - name: Print info
+      debug: var="master_info.private_ip_address"
