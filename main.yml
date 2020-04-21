@@ -11,5 +11,6 @@
     
     - name: Get facts for master
       ec2_instance_info:
+        region: us-east-2
         filters:
           "tag:Name": master
