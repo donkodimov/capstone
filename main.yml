@@ -24,4 +24,4 @@
         hostname: master
         ansible_host: "{{ item.private_ip_address }}"
         groups: ec2master
-      loop: "{{ ec2_master.instances[0] }}"
+      loop: "{{ ec2_master['instances'][0] }}"
