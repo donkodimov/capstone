@@ -17,4 +17,5 @@
       register: master_info 
 
     - name: Print info
-      debug: var="{{ master_info.instances.private_ip }}"
+      debug: var={{ item.private_ip }}
+      with_items: master_info.instances
