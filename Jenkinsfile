@@ -28,8 +28,8 @@ pipeline {
     }
     stage('Login to dockerhub') {
       steps {
-        withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerhubpwd')]) {
-          sh 'docker login -u donko -p ${dockerhubpwd}'
+        withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'passwordVariable')]) {
+          sh 'docker login -u donko -p ${env.dockerHubPassword}'
         }
       }
     }
