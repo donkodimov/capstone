@@ -7,10 +7,7 @@
   tasks:
     - name: Ensure boto and boto3 modules are installed
       pip:
-        name: "{{ item }}"
-      with_items:
-        - boto3
-        - botocore
+        name: ['boto3', 'botocore']
     
     - name: Get facts for master
       ec2_instance_info:
