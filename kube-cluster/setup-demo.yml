@@ -197,7 +197,7 @@
   gather_facts: false
   vars:
     replicas: 4
-    image_name: donko/myapp:blue
+    image_name: nginx:1.14.2
   tasks:
     - name: Create a Deployment for myapp.
       k8s:
@@ -206,20 +206,20 @@
           apiVersion: apps/v1
           kind: Deployment
           metadata:
-            name: myapp
+            name: nginx
             namespace: default
           spec:
             replicas: "{{ replicas }}"
             selector:
               matchLabels:
-                app: myapp
+                app: nginx
             template:
               metadata:
                 labels:
-                  app: myapp
+                  app: nginx
               spec:
                 containers:
-                - name: myapp
+                - name: nginx
                   image: "{{ image_name }}"
                   imagePullPolicy: Always
                   ports:
@@ -240,7 +240,7 @@
               targetPort: 80
               nodePort: 30007
             selector:
-              app: myapp
+              app: nginx
 
 - hosts: ec2workers
   gather_facts: True
