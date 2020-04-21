@@ -223,7 +223,7 @@
                   image: "{{ image_name }}"
                   imagePullPolicy: Always
                   ports:
-                  - containerPort: 8000
+                  - containerPort: 80
     - name: Create a Service for myapp.
       k8s:
         state: present
@@ -236,8 +236,8 @@
           spec:
             type: NodePort
             ports:
-            - port: 8000
-              targetPort: 8000
+            - port: 80
+              targetPort: 80
               nodePort: 30007
             selector:
               app: myapp
