@@ -1,0 +1,80 @@
+---
+- name: Get master IP address
+  hosts: [localhost]
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/bin/python2
+  tasks:
+    - name: Ensure boto and boto3 modules are installed
+      pip:
+        name: ['boto3', 'botocore']
+    
+    - name: Get facts for master
+      ec2_instance_info:
+        region: us-east-2
+        filters:
+          "tag:Name": master
+      register: ec2_master 
+
+    - name: Print info
+      debug: msg="{{ ec2_master['instances'][0]['private_ip_address'] }}"
+    
+    - name: Add instance private IPs to group
+      add_host:
+        hostname: master
+        ansible_host: "{{ ec2_master['instances'][0]['private_ip_address'] }}"
+        groups: ec2master
+
+- name: Run deployment and service
+  hosts: ec2master
+  user: ubuntu
+  gather_facts: false
+  vars:
+    replicas: 4
+    image_name: donko/myapp
+    deployment: green
+  tasks:
+    - name: Create a Deployment for myapp.
+      k8s:
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: "myapp-{{ deployment }}"
+            namespace: default
+          spec:
+            replicas: "{{ replicas }}"
+            selector:
+              matchLabels:
+                app: myapp
+            template:
+              metadata:
+                labels:
+                  app: myapp
+                  deployment: "{{ deployment }}"
+              spec:
+                containers:
+                - name: myapp
+                  image: "{{ image_name }}:{{ deployment }}"
+                  imagePullPolicy: Always
+                  ports:
+                  - containerPort: 80
+    - name: Create a Service for myapp.
+      k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: myapp
+            namespace: default
+          spec:
+            type: NodePort
+            ports:
+            - port: 80
+              targetPort: 80
+              nodePort: 30007
+            selector:
+              app: myapp
+              deployment: "{{ deployment }}"

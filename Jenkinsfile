@@ -16,9 +16,31 @@ pipeline {
                 }
             }
          }
-         stage('Create EC2 Instance') {
+         stage('Lint') {
+      steps {
+        sh 'make lint'
+      }
+    }
+    stage('Build Docker') {
+      steps {
+        sh 'make build'
+      }
+    }
+    stage('Login to dockerhub') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+          sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+        }
+      }
+    }
+    stage('Upload Image') {
+      steps {
+        sh 'make upload'
+      }
+    }
+         stage('Deploy to Kubernetes') {
               steps {
-                  ansiblePlaybook playbook: 'kube-cluster/setup-demo.yml', inventory: 'inventory', credentialsId: 'pipeline'
+                  ansiblePlaybook playbook: 'main.yml', inventory: 'inventory', credentialsId: 'pipeline'
               }
          }
          
