@@ -18,7 +18,7 @@ pipeline {
          }
          stage('Create EC2 Instance') {
               steps {
-                  ansiblePlaybook playbook: 'kube-cluster/setup-demo.yml', inventory: 'inventory', credentialsId: 'pipeline'
+                  ansiblePlaybook playbook: 'get_aws_facts.yml', inventory: 'inventory', credentialsId: 'pipeline'
               }
          }
          
