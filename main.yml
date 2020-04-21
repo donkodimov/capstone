@@ -17,4 +17,4 @@
       register: master_info 
 
     - name: Print info
-      debug: var="master_info.instances"
+      debug: var="master_info.instances.private_ip_address"
