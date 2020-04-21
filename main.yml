@@ -14,7 +14,14 @@
         region: us-east-2
         filters:
           "tag:Name": master
-      register: master_info 
+      register: ec2_master 
 
     - name: Print info
-      debug: msg="{{ master_info['instances'][0]['private_ip_address'] }}"
+      debug: msg="{{ ec2_master['instances'][0]['private_ip_address'] }}"
+    
+    - name: Add instance private IPs to group
+      add_host:
+        hostname: master
+        ansible_host: "{{ item.private_ip_address }}"
+        groups: ec2master
+      loop: "{{ ec2_master.instances[0] }}"
