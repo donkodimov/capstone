@@ -17,27 +17,27 @@ pipeline {
             }
          }
          stage('Lint') {
-      steps {
-        sh 'make lint'
-      }
-    }
-    stage('Build Docker') {
-      steps {
-        sh 'make build'
-      }
-    }
-    stage('Login to dockerhub') {
-      steps {
-        withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerhubpwd')]) {
-          sh 'docker login -u donko -p ${dockerhubpwd}'
-        }
-      }
-    }
-    stage('Upload Image') {
-      steps {
-        sh 'make upload'
-      }
-    }
+            steps {
+              sh 'make lint'
+            }
+          }
+          stage('Build Docker') {
+            steps {
+              sh 'make build'
+            }
+          }
+          stage('Login to dockerhub') {
+            steps {
+              withCredentials([string(credentialsId: 'dockerid', variable: 'dockerhubpwd')]) {
+                sh 'docker login -u donko -p ${dockerhubpwd}'
+              }
+            }
+          }
+          stage('Upload Image') {
+            steps {
+              sh 'make upload'
+            }
+          }
          stage('Deploy to Kubernetes') {
               steps {
                   ansiblePlaybook playbook: 'main.yml', inventory: 'inventory', credentialsId: 'pipeline'
