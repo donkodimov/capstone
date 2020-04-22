@@ -38,24 +38,17 @@ pip install boto boto3 botocore openshift flask
 ```
 
 5. Configure Jenkins:
-
+* Add your AWS credentials to CloudBees AWS Credentials Plugin
+* Add your Aqua MicroScanner credentials to Aqua MicroScanner Plugin
 
 ### Build and test the Kubernetes environment
 
-Login to Jenkins server and open Blue Ocean
-```
-Examples here
-```
+1. Create the pipelins in Blue Ocean importing the repo.
+2. Run the master branch pipeline first to create the EC2 instances, the Load Balancer,  install all dependancies and create the Kubernetes cluster. 
+3. Look at the Load Balancer URL in AWS console and check that you get valid response from the web site.
+4. Run the blue branch pipeline to build, test and deploy the application and the service in Kubernetes cluster. Check the LB URL again and confirm blue deployment was successfull.
+5. Run the green branch pipeline to build, test and deploy the application and swich the service to map the green deployment. Check the LB URL again and confirm green deployment was successfull.
 
-### Installation
-
-Step by step explanation of how to get a dev environment running.
-
-List out the steps
-
-```
-Give an example here
-```
 
 ## Testing
 
