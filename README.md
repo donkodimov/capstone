@@ -1,17 +1,48 @@
-# capstone
+# Capstone project 
 
-Final project - Cloud DevOps Udacity
+This repo provides the code for building, testing and deploying a flask application on Kubernetes cluster. Using Jenkins to implement Continuous Integration and Continuous Deployment we will build three Jenkins pipelines:
+* Provide the Kubernetes cluster (1 master + 2 worker nodes) on AWS with Ansible - **main branch**
+* Build, test and run containers for blue deployment - **blue branch**
+* Build, test and run containers for green deployment - **green branch**
 
 ## Getting Started
 
-Copy the repo and navigate to directory:
+1. Install Jenkins server on AWS EC2 instance: 
+- Select OS Ubuntu 18.04 and instance t2.medium.
+- Create and download SSH key from AWS
+- connect to your instance with the SSH key from above and install Jenkins:
 ```
-git clone https://github.com/donkodimov/capstone.git
-cd capstone
+sudo apt-get install -y default-jdk
+wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt-get update
+sudo apt-get install -y jenkins
 ```
 
-### Dependencies
+2. Install Jenkins Plugins:
+* Blue Ocean 
+* Ansible
+* CloudBees AWS Credentials Plugin
+* Aqua MicroScanner
 
+3. Install linux packages:
+```
+sudo apt-add-repository --yes --update ppa:ansible/ansible
+sudo apt-get update
+sudo apt-get install -y ansible docker.io git tidy pylint python python3 python-pip
+```
+
+4. Install python packages:
+```
+pip install boto boto3 botocore openshift flask
+```
+
+5. Configure Jenkins:
+
+
+### Build and test the Kubernetes environment
+
+Login to Jenkins server and open Blue Ocean
 ```
 Examples here
 ```
