@@ -16,7 +16,7 @@ pipeline {
                 }
             }
          }
-         stage('Create EC2 Instance') {
+         stage('Create Kubernetes cluster') {
               steps {
                   ansiblePlaybook playbook: 'main.yml', inventory: 'inventory', credentialsId: 'pipeline'
               }
