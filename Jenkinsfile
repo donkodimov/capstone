@@ -30,6 +30,7 @@ pipeline {
               steps { 
                  aquaMicroscanner imageName: 'donko/myapp:blue', notCompleted: 'exit 1', onDisallowed: 'fail'
               }
+    }
     stage('Login to dockerhub') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
