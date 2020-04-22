@@ -50,28 +50,14 @@ pip install boto boto3 botocore openshift flask
 5. Run the green branch pipeline to build, test and deploy the application and swich the service to map the green deployment. Check the LB URL again and confirm green deployment was successfull.
 
 
-## Testing
 
-Explain the steps needed to run any automated tests
-
-### Break Down Tests
-
-Explain what each test does and why
-
-```
-Examples here
-```
-## Project Instructions
-
-This section should contain all the student deliverables for this project.
 
 ## Built With
 
-* [Item1](www.item1.com) - Description of item
-* [Item2](www.item2.com) - Description of item
-* [Item3](www.item3.com) - Description of item
+* [Jenkis](https://jenkins.io) - Jenkins is a self-contained, open source automation server which can be used to automate all sorts of tasks related to building, testing, and delivering or deploying software.
+* [Ansible](https://www.ansible.com) - Ansible is an open-source software provisioning, configuration management, and application-deployment tool
 
-Include all items used to build project.
+
 
 ## License
 [License](../LICENSE.md)
