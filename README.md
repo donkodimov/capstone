@@ -1,9 +1,9 @@
 # Capstone project 
 
-This repo provides the code for building, testing and deploying a flask application on Kubernetes cluster. The project consists of 3 Jenkins pipelines:
-* Provide the Kubernetes cluster (1 master + 2 worker nodes) on AWS with ansible - **main branch**
-* Build, test and run blue deployment - **blue branch**
-* Build, test and run green deployment - **green branch**
+This repo provides the code for building, testing and deploying a flask application on Kubernetes cluster. Using Jenkins to implement Continuous Integration and Continuous Deployment we will build three Jenkins pipelines:
+* Provide the Kubernetes cluster (1 master + 2 worker nodes) on AWS with Ansible - **main branch**
+* Build, test and run containers for blue deployment - **blue branch**
+* Build, test and run containers for green deployment - **green branch**
 
 ## Getting Started
 
