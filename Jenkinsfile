@@ -28,7 +28,7 @@ pipeline {
     }
     stage('Security Scan') {
               steps { 
-                 aquaMicroscanner imageName: 'donko/myapp:blue', notCompleted: 'exit 1', onDisallowed: 'fail'
+                 aquaMicroscanner imageName: 'donko/myapp:blue', notCompliesCmd: 'exit 1', onDisallowed: 'fail', outputFormat: 'html'
               }
     }
     stage('Login to dockerhub') {
