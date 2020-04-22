@@ -26,6 +26,11 @@ pipeline {
         sh 'make build'
       }
     }
+    stage('Security Scan') {
+              steps { 
+                 aquaMicroscanner imageName: 'donko/myapp:green', notCompliesCmd: 'exit 1', onDisallowed: 'fail', outputFormat: 'html'
+              }
+    }
     stage('Login to dockerhub') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
