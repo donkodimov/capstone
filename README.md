@@ -31,6 +31,11 @@ sudo apt-add-repository --yes --update ppa:ansible/ansible
 sudo apt-get update
 sudo apt-get install -y ansible docker.io git tidy pylint python python3 python-pip
 ```
+* Add jenkins user to docker group:
+
+```
+sudo usermod -a -G docker jenkins
+```
 
 4. Install python packages:
 ```
