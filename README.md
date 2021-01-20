@@ -35,6 +35,7 @@ sudo apt-get install -y ansible docker.io git tidy pylint python python3 python-
 
 ```
 sudo usermod -a -G docker jenkins
+newgrp docker
 ```
 
 4. Install python packages:
